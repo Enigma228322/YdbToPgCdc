@@ -1,5 +1,10 @@
 ## YDB Async replication app
 
+Quick start:
+```bash
+docker-compose up -d && go run main.go
+```
+
 Create ydb table and changefeed stream. Not neccessary to do it manualy, cause this implemented in code (ydb_service::SetupYdbTableAndCdc)
 ```sql
 CREATE TABLE `/local/my_table` (

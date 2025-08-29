@@ -5,11 +5,15 @@ services:
     build: ./docker/ydb
     container_name: ydb_server
     ports:
+      - "2135:2135"
       - "2136:2136"
       - "8765:8765"
     environment:
-      YDB_ENDPOINT: "ydb:2136"
+      # YDB_ENDPOINT: "ydb:2136"
       YDB_DATABASE: "/local"
+    hostname: localhost
+    platform: linux/amd64
+
 
   postgres:
     build: ./docker/postgres

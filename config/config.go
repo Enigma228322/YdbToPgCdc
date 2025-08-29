@@ -3,7 +3,7 @@ package config
 import "os"
 
 const (
-	DefaultYdbEndpoint = "grpc://localhost:2136"
+	DefaultYdbEndpoint = "grpc://0.0.0.0:2136"
 	DefaultYdbDatabase = "/local"
 	DefaultPgConnInfo  = "postgres://postgres:mysecretpassword@localhost:5432/mydb"
 )

@@ -139,13 +139,36 @@ func ReadCdcStream(ctx context.Context, db *ydb.Driver, pgConn *pgx.Conn) {
 			continue
 		}
 
-		id, ok := cdcEvent["id"].(float64)
-		if !ok {
+		var id uint64
+
+		if keys, ok := cdcEvent["key"].([]interface{}); ok && len(keys) > 0 {
+			var val interface{} = keys[0]
+			switch v := val.(type) {
+			case int:
+				id = uint64(v)
+			case int64:
+				id = uint64(v)
+			case float64:
+				id = uint64(v)
+			default:
+				log.Printf("Missing or invalid 'id' in CDC message: %+v", cdcEvent)
+				continue
+			}
+		} else {
 			log.Printf("Missing or invalid 'id' in CDC message: %+v", cdcEvent)
 			continue
 		}
-		data, ok := cdcEvent["data"].(string)
-		if !ok {
+
+		var data string
+
+		if newImage, dataOk := cdcEvent["newImage"].(map[string]interface{}); dataOk {
+			if d, dataOk := newImage["data"].(string); dataOk {
+				data = d
+			} else {
+				log.Printf("Missing or invalid 'data' in CDC message: %+v", cdcEvent)
+				continue
+			}
+		} else {
 			log.Printf("Missing or invalid 'data' in CDC message: %+v", cdcEvent)
 			continue
 		}
